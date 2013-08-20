@@ -1,6 +1,6 @@
 <?php
     class Func_Pinyin{
-        function getFristLetter($str)
+        public static function getFristLetter($str)
         {
             $str = iconv('utf8','gb2312' , $str);
             $asc=ord(substr($str,0,1));
@@ -73,4 +73,3 @@
         } 
 
     }
-?>
