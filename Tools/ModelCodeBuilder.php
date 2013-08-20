@@ -4,6 +4,7 @@
     * @note  连接数据库自动生成model 代码
     */
     class Tools_ModelCodeBuilder{
+	static public $modelPath = '';
 
         /** Model Code Template */
         static private $_template ="<?php
@@ -26,7 +27,7 @@
         static private $_cmd;
 
         static public function writeToFile($className , $code){
-            $file = __APP_ROOT__ .'Api/'. str_replace('_' , '/' , $className).'.php';
+            $file = __APP_ROOT__ .self::$modelPath. str_replace('_' , '/' , $className).'.php';
 
             if(file_exists($file)){
                 if(self::$_cmd == 'GenNew'){

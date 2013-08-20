@@ -88,7 +88,7 @@
 
             /** 设置App个性相关的全局变量*/
             self::$_appRoot = __APP_ROOT__;
-            self::$_appTempatePath = __APP_ROOT__.Tiri_Config::get('template_path');
+            self::$_appTempatePath = __APP_ROOT__.Tiri_Config::get('app.templatePath');
 
             /** 初始化User 类 : 给指定一个数据Model*/
             /** User 加载cookie 必须在使用前init */

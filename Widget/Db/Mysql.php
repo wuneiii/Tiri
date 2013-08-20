@@ -38,7 +38,6 @@
         function query($sql) {
             $_start = microtime(true);
             if(!($query = mysql_query($sql , $this -> _link))) {
-                Log::sql(__FILE__,__LINE__,'ERROR:'.$sql.var_export($this -> getErrorMsg() , true) . var_export($this -> getErrorNo() , true));
                 $this->halt('MySQL Query Error', $sql);
             }
             $_end = microtime(true);
@@ -46,7 +45,6 @@
             $this -> _info ['sql'][] = $sql;
             $this -> _info ['time'][] = $_end - $_start;
 
-            Log::sql(__FILE__ ,__LINE__ , '['.($_end - $_start).']SQL :' .$sql.';');
 
             return $query;
         }
