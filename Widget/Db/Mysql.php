@@ -11,8 +11,8 @@
         public static function getInstance($conf){
             if(self::$_instance == null){
 
-                self::$_instance = new Widget_Db_Mysql();
-                self::$_instance -> connect($conf['dbHost'] , $conf['dbUser'] , $conf['dbPassword'] , $conf['dbName']);
+                self::$_instance = new Widget_Db_Mysql();   
+                self::$_instance -> connect($conf['dbHost'].':'.$conf['dbPort'] , $conf['dbUser'] , $conf['dbPassword'] , $conf['dbName']);
                 if($conf['dbCharset'] != '')
                     self::$_instance -> query("SET NAMES ".$conf['dbCharset'].";");
             }

@@ -7,16 +7,12 @@
 
                 $controller;
             }else{
-                $paramName = Tiri_Config::get('controller_param_name');
+                $paramName = Tiri_Config::get('app.controllerParamName');
                 if(!$controller = $req -> getVal($paramName)){
-                     $controller = Tiri_Config::get('default_controller');
+                     $controller = Tiri_Config::get('app.defaultController');
                 }
             }
             return 'Controller_'.$controller;
-
-
-            return Tiri_Config::get('default_controller');
-
         }
         public function getAction(Tiri_Request $req){
 
@@ -25,9 +21,9 @@
                 $action ;
             }
 
-            $paramName = Tiri_Config::get('action_param_name');
+            $paramName = Tiri_Config::get('app.actionParamName');
             if(!$action = $req -> getVal($paramName)){
-                $action = Tiri_Config::get('default_action');
+                $action = Tiri_Config::get('app.defaultAction');
             }
             return $action . 'Action';
         }

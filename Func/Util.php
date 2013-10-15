@@ -248,7 +248,7 @@
             elseif ($var == 4)return date("Y-n-j G:i:s", $datetime);
         }
         //==========================警告，弹出对话框并返回上一页===============================
-        function alert($info)
+        static public  function alert($info)
         {
             echo "<script language=\"javascript\">
 

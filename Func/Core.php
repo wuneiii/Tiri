@@ -11,8 +11,8 @@
 
         $_baseUrl       = Tiri_Request::getInstance() -> getPath();
         $_isUrlRewrite  = Tiri_Config::get('isUrlRewrite' , false);
-        $controllerParamName    = Tiri_Config::get('controller_param_name');
-        $actionParamName        = Tiri_Config::get('action_param_name');
+        $controllerParamName    = Tiri_Config::get('app.controllerParamName');
+        $actionParamName        = Tiri_Config::get('app.actionParamName');
 
         if($controler != ''){
             $arrReq[ $controllerParamName ] = $controler;

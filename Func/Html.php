@@ -1,5 +1,5 @@
 <?php
-    class Func_CHtml{
+    class Func_Html{
 
         static public function select($name , $option = array(), $selected = '',  $attr = array('class'=>'','id'=>'')){
             $_attrStr = '';
