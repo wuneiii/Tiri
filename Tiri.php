@@ -12,10 +12,6 @@
     Tiri_Hook::getInstance() -> runHook('afterAppInit');
     Widget_Probe::here('After Tiri_App::init()');
 
-    if($_GET['model'] == 1){
-        Tools_ModelCodeBuilder::build();
-        exit;
-    }
 
     Tiri_Hook::getInstance() -> runHook('beforeDispose');
     Widget_Probe::here('Before Tiri_Router::dispose();');

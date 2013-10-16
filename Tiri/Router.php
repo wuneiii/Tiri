@@ -52,14 +52,9 @@
             Widget_Probe::here('After run default router;');
             
             //ob_get_clean();
-            
-            if(!$responseClass = Tiri_Config::get('app.response')){
-                echo $ret;
-                return;
-            }
-            $response = new $responseClass;
+
+            $response = Tiri_App::getResponse();
             $response -> send($ret);
 
         }
     }
-?>
