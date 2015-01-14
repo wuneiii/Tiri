@@ -84,10 +84,10 @@
             return date('Y-m-d H:i:s' , time());
         }
 
-        static function getIosFromTimeStamp($st = ''){
+        static function getIosFromTimeStamp($st = '',$default = ''){
 
             if($st == ''){
-                return '';
+                return $default;
             }
             return date('Y-m-d H:i:s' ,$st);
         }

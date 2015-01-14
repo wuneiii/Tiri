@@ -8,18 +8,17 @@ class Tools_ModelCodeBuilder{
 
     /** Model Code Template */
     static private $_template ="<?php
-    /**
-    * Autogen @ %s
-    * mapping to '%s' table of db 
-    */
-    class %s extends Tiri_Model{
+/**
+* Autogen @ %s
+* mapping to '%s' table of db 
+*/
+class %s extends Tiri_Model{
     public function __construct(){
-    \$this -> _table = '%s';
-    \$this -> _primary_key = '%s';
-    \$this -> _fields= array(\n%s);
+        \$this -> _table = '%s';
+        \$this -> _primary_key = '%s';
+        \$this -> _fields= array(\n%s);
     }
-    }
-    ?>";
+}";
     /** Model User Class Pash*/
     static private $_classPath = 'Model';
 
@@ -56,7 +55,8 @@ class Tools_ModelCodeBuilder{
         while($rs = mysql_fetch_array($qry)){
 
             $tableName = $rs['0'];
-            $td = mysql_query("desc $tableName");
+            $td = mysql_query("desc `$tableName`");
+            
 
             /** 处理一个表,并生成orm 代码 */
             $modelName = self::$_classPath . '_'. self::tableNameToModelName($rs[0]);

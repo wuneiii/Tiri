@@ -12,7 +12,7 @@
                 return false;
             }
             if(!file_exists($toDir)){
-                if(!@mkdir($toDir,'0755',true)){
+                if(!mkdir($toDir,'0755',true)){
                     return false;
                 }
             }

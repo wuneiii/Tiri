@@ -8,39 +8,44 @@
 [PHP_SELF] => /admin/index.php/a/b/c
 */
 class Tiri_Request{
-
+    public static $instance;
     private $_controller;
-
     private $_action;
-
     private $_method;
-
     private $_remoteIp;
-
     private $_refer;
-
     private $_host;
-
     private $_port;
-
     private $_path;
 
-    private static $_instance;
+    private function __construct(){}
 
-    private function __construct(){
-        $this -> analysis();
+    static public function getInstance(){
+        if(null == self::$instance){
+            self::$instance = new Tiri_Request();
+            self::$instance->analysis();
+        }
+        return self::$instance;
     }
+    public function analysis(){
+        $app = Tiri_App::getInstance();
+        $urlResolver = $app->getUrlResolver();
 
-    /**
-    * @deprecated
-    * 
-    * @param mixed $key
-    */
-    public function getVal($key){
-        return $this -> getParam($key);
+        $this->_controller  = $urlResolver->getController($this);
+        $this->_action      = $urlResolver->getAction($this);
+
+        $this->_host =  $_SERVER['HTTP_HOST'];
+        $this->_port = $_SERVER['SERVER_PORT'];
+        $this->_remoteIp    = $this->getIp();
+        $this->_method      = strtolower($_SERVER['REQUEST_METHOD']);
+
+        $this->_path = dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        //todo::检查输入
+        if(isset($_SERVER['HTTP_REFERER'])){      
+            $this->_refer = $_SERVER['HTTP_REFERER'];
+        }
     }
-
-
+    
     public function getParam($key){
         if(isset($_GET[$key])){
             return $_GET[$key];
@@ -49,52 +54,31 @@ class Tiri_Request{
         }
         return null;
     }
-
+    public function getInt($key){
+        return intval($this->getParam($key));
+    }
+    public function getString($key){
+        return strval($this->getParam($key));
+    }
+    public function getArray($key){
+        $val = $this->getParam($key);
+        if(!is_array($val)){
+            return array();
+        }
+        return $val;
+    }
     public function getFile($key){
         if(isset($_FILES[$key])){
             return $_FILES[$key];
         }
         return null;
     }
-
-    static public function getInstance(){
-        if(NULL == self::$_instance){
-            self::$_instance = new Tiri_Request();
-        }
-        return self::$_instance;
+    public function isPost(){
+        return strtolower($this->_method) == 'post';
     }
-
-    public function analysis(){
-
-        $this -> _host =  $_SERVER['HTTP_HOST'];
-        $this -> _port = $_SERVER['SERVER_PORT'];
-        $this -> _remoteIp = self::getIp();
-        $this -> _method = $_SERVER['REQUEST_METHOD'];
-
-
-        $this -> _controller = Tiri_App::getUrlResolver() -> getController($this);
-        $this -> _action = Tiri_App::getUrlResolver() -> getAction($this);
-
-        $sn = explode('/',$_SERVER['SCRIPT_NAME']);
-        $sn[count($sn)-1] = '';     
-        $this -> _path = implode('/',$sn); 
-        if(isset($_SERVER['HTTP_REFERER']))      
-            $this -> _refer = $_SERVER['HTTP_REFERER'];
-    }
-
-    public function param($key , $default = null){
-        switch(true){
-            case isset($_GET[$key]):
-                return $_GET[$key];
-            case isset($_POST[$key]):
-                return $_POST[$key];
-            default:
-                return $default;
-        }
-    }
-
     public function getUrlWithQuery($key , $value){
-        $ret  = $this -> _path.'index.php';
+
+        $ret  = $this->_path;
         if(!is_array($_GET)){
             return $ret.'?'.$key.'='.$value;
         }
@@ -106,7 +90,7 @@ class Tiri_Request{
         return substr($ret , 0 , strlen($ret) - 1);
     }
     public function getUrl(){
-        $ret  = $this -> _path.'index.php';
+        $ret  = $this->_path.'index.php';
         if(!is_array($_GET)){
             return $ret;
         }
@@ -116,30 +100,29 @@ class Tiri_Request{
         }
         return substr($ret , 0 , strlen($ret) - 1);
     }
-
     public function getController(){
-        return $this -> _controller;
+        return $this->_controller;
     }
     public function getAction(){
-        return $this -> _action;
+        return $this->_action;
     }
     public function getPath(){
-        return $this -> _path;
+        return $this->_path;
     }
-
     public function getRefer(){
-        return $this -> _refer;
+        return $this->_refer;
     }
-
+    public function getHost(){
+        return 'http://'. $this->_host;
+    }
     public function getMethod(){
-        return $this -> _method;    
+        return $this->_method;    
     }
-
     public function getRequestUrl(){
         return $_SERVER['REQUEST_URI'];
     }
-
-    public static function getIp(){
+    public function getIp(){
+        // TODO ::检查输入， 这些自动都可以被手动设置
         if (isset($_SERVER)) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $realip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -159,5 +142,5 @@ class Tiri_Request{
         }
         return $realip;
     }
+
 }
-?>

@@ -1,6 +1,13 @@
 <?php
     class Func_Util{
         static public function init(){}
+        
+        static public function fristStrToUpper($string){
+            if(strlen($string) <= 0){
+                return false;
+            }
+            return strtoupper(substr($string,0 ,1)) . substr($string,1);
+        }
 
         static public function getColor($ca , $cb){
             static $_sa = true;
@@ -437,7 +444,7 @@
             return true;
         }
         //===================================返回大写文件扩展名==================================================
-        function getFileExt($filename){
+        static function getFileExt($filename){
             $fileParts = explode( ".", $filename );
             return strtolower($fileParts[count($fileParts)-1]);
         }

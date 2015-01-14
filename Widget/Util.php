@@ -3,7 +3,8 @@
 
         static public function randString($length = 6){
             $char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghicklmnopqrstuvwxyz1234567890';
-            $len = strlen($char);
+            $len = strlen($char) -1;
+            $ret = '';
             if( intval($length) <= 0 )$length = 6;
             for($i=1; $i <= $length; $i++){
                 $ret .= $char[ mt_rand( 0, $len)];
@@ -13,6 +14,7 @@
         }
         static public function randHexString($length = 6){
             if( intval($length) <= 0 )$length = 6;
+            $ret = '';
             for($i=1; $i <= $length; $i++){
                 $ret .= dechex($i);
             }

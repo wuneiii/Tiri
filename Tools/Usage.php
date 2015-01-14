@@ -20,12 +20,12 @@ class Tools_Usage{
     }
     public function getAppInternalParam(){
         $array = array(
-            'app配置文件' => file_exists( __APP_ROOT__ . '/config.inc.php' ) ? __APP_ROOT__ . '/config.inc.php' : '未找到',
-            '默认配置文件' => file_exists( __TIRI_ROOT__ . '/config.inc.php' ) ? __TIRI_ROOT__ . '/config.inc.php' : '未找到',
+            'app配置文件' => file_exists( __APP_ROOT__ . '/config.inc.php' ) ? '已加载:'.__APP_ROOT__ . '/config.inc.php' : '未找到',
+            '默认配置文件' => file_exists( __TIRI_ROOT__ . '/config.inc.php' ) ? '已加载:'. __TIRI_ROOT__ . '/config.inc.php' : '未找到',
             'globalConfigFile' => Tiri_Config::get('app.globalConfigFile') == ''?'无' : Tiri_Config::get('app.globalConfigFile'),
+            'appRoot' => Tiri_App::getAppRootPath(),
             'autoLoadPath' => implode('; ', Tiri_Config::get('app.autoLoadPath')),
             'include_path' => get_include_path(),
-            'appRoot' => Tiri_App::getAppRootPath(),
             'templatePath' => Tiri_App::getAppTemplatePath(),
             '默认控制器' => Tiri_Config::get('app.defaultController'),
             '默认动作' => Tiri_Config::get('app.defaultAction'),
@@ -39,7 +39,10 @@ class Tools_Usage{
         }           
         return $ret;
     }
-    public function showExceptionHelp($e , $extra = array()){   
+    public function showExceptionHelp($e , $extra = array()){ 
+        if(!Tiri_Config::get('app.debug')){
+            return;
+        }  
         $this->_page = new Tiri_Template();
         $this->_page->assignArray(Tools_Usage::getInstance()->getDefaultVars());
         $this->_page->assign('appInternalParam', Tools_Usage::getInstance()->getAppInternalParam());
@@ -66,6 +69,22 @@ class Tools_Usage{
 
         $this->_page->assign('runTimeTitle', '错误：控制器 "'.$controllerName.'" 不存在');
         $this->_page->assign('runTimeSuggestion', $runTimeSuggestion);
+    }
+    // url解析器不存在
+    public function urlResolverNotFound($e, $className) {
+        $this->_page = new Tiri_Template();
+        $this->_page->assignArray(Tools_Usage::getInstance()->getDefaultVars());
+        $this->_page->assign('appInternalParam', Tools_Usage::getInstance()->getAppInternalParam());
+        $this->_page->assign('exceptionTrace', $e->getTraceAsString());
+
+        $runTimeSuggestion = '<li>请在 include_path 目录下，创建文件' . Tiri_App::getFileNameByClassName($className).'</li>';
+        $runTimeSuggestion .= '<li>在该文件中定义 '.$className.' 类</li>';
+
+        $this->_page->assign('runTimeTitle', '错误：Url解析器 "'.$className.'" 不存在');
+        $this->_page->assign('runTimeSuggestion', $runTimeSuggestion);
+
+        $this->_page->renderBraceTemplate($this->outputTemplate());
+
     }
 
     public function outputTemplate(){

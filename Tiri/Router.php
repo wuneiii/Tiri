@@ -16,14 +16,10 @@
         }
 
         public static function dispose(){
-
-            $req = Tiri_Request::getInstance();
-
             
-            self::$_resolver = Tiri_App::getUrlResolver();
-            $appController = self::$_resolver -> getController($req);
-            $appAction  = self::$_resolver -> getAction($req);
-
+            $req = Tiri_Request::getInstance();
+            $appController = $req->getController();
+            $appAction  = $req->getAction();
 
             /** 1step */
             /** run fixed router */
@@ -53,7 +49,7 @@
             
             //ob_get_clean();
 
-            $response = Tiri_App::getResponse();
+            $response = Tiri_App::getInstance()->getResponse();
             $response -> send($ret);
 
         }
