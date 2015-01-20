@@ -29,5 +29,3 @@ class Widget_Cookie{
         return md5(substr($string , 0,$signLength). substr($string , (0 - $signLength)));
     }
 }
-
-?>

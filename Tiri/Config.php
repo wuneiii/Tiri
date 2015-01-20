@@ -1,69 +1,66 @@
 <?php
-class Tiri_Config{
+
+/**
+ * 配置项目容器
+ *
+ * @version 0.3.8
+ * @date 2015-01-20 18:26:08
+ *
+ */
+class Tiri_Config {
+
 
     private static $_config;
-    private static $_global;
 
-    private function __construct(){
-
-    }
-    static public function getInstance(){
-        if(null == self::$_instance){
-            self::$_instance = new Tiri_Config();
-        }
-        return self::$_instance;
-    }
-
-    static public function loadConfigFile($file){
-        if(!file_exists($file))
-            return false;
-        require_once $file;
-
-    }
     /**
-    * @deprecated
-    * 
-    * @param mixed $config
-    */
-    static public function loadConfig($config = array()){
-        if(count($config) > 0){
-            foreach($config as $key => $value){
-                self::$_config[$key] = $value;
-            } 
+     * 加载配置文件
+     * @param $file
+     * @return bool
+     */
+    static public function loadConfigFile($file) {
+
+        if (strpos($file, 'config.inc.php') === false) {
+            return false;
         }
+        if (!file_exists($file) && !is_readable($file)) {
+            return false;
+        }
+        require_once $file;
     }
 
-    static public function setGlobal($key , $value){
-        self::$_global[ $key ] = $value; 
-    }
-    static public function getGlobal($key){
-        return self::$_global[ $key ];
+
+    static public function set($key, $value) {
+        self::$_config[$key] = $value;
     }
 
-    static public function set($key , $value){
-        self::$_config[ $key ] = $value;
-
-    }
-    static public function setArray($array){
-        if(!is_array($array) || count($array) == 0){
+    static public function setArray($array) {
+        if (!is_array($array) || count($array) == 0) {
             return;
         }
-        foreach($array as $k => $v){
+        foreach ($array as $k => $v) {
             self::set($k, $v);
         }
     }
-    static public function get($key , $default = null){
-        if(!isset( self::$_config[ $key ]) )
-            return null;
-        return self::$_config[ $key ];
+
+    static public function get($key, $default = '') {
+        if (isset(self::$_config[$key])) {
+            return self::$_config[$key];
+        }
+        if ($default) {
+            return $default;
+        }
+        return false;
     }
-    static public function dump(){
+
+
+    static public function delete($key) {
+        if (isset(self::$_config[$key])) {
+            unset(self::$_config[$key]);
+        }
+    }
+
+    static public function dump() {
         var_dump(self::$_config);
         var_dump(self::$_global);
     }
-
-    static public function delete($key){
-        unset(self::$_config[ $key ]);
-    }
-
 }

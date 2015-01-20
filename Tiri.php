@@ -1,19 +1,23 @@
 <?php
-if (!defined('__APP_ROOT__')) {
-    die('No App_Root!');
+/**
+ * 框架入口
+ */
+
+if (!defined('APP_ROOT')) {
+    die('Please define App_Root!');
 }
 
-define ('__TIRI_ROOT__', dirname(__FILE__));
+define ('TIRI_ROOT', dirname(__FILE__));
 
-require_once __TIRI_ROOT__.'/Widget/Probe.php';
-/**
-* 开始计时表，随时可以调用计时来获取运行时间
-*/
+
+require TIRI_ROOT.'/Widget/Probe.php';
+
 Widget_Probe::startTimer();
-//第一根性能探针
+
 Widget_Probe::here('App start up now;');
 
-require_once __TIRI_ROOT__.'/Tiri/App.php';
+require TIRI_ROOT.'/Tiri/App.php';
+
 Tiri_App::init();
 
 $appHook = Tiri_Hook::getInstance();

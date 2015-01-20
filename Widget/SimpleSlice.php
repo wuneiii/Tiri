@@ -56,17 +56,8 @@
             file_put_contents( $this -> _file , $content);
         }
 
-
         public function getFirstKey(){
             $ak = array_keys($this -> _data);
             return $ak[0];
         }
-
-
-
-
-
-
     }
-
-?>
