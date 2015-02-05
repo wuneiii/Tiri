@@ -1,5 +1,5 @@
 <?php
-
+namespace Tiri;
 /**
  * 配置项目容器
  *
@@ -7,7 +7,7 @@
  * @date 2015-01-20 18:26:08
  *
  */
-class Tiri_Config {
+class Config {
 
 
     private static $_config;
@@ -25,7 +25,7 @@ class Tiri_Config {
         if (!file_exists($file) && !is_readable($file)) {
             return false;
         }
-        require_once $file;
+        return require $file;
     }
 
 

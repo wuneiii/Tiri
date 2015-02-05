@@ -1,5 +1,6 @@
 <?php
-    class Func_Upload{
+namespace Tiri\Func;
+    class Upload{
         /**
         * 创建目标路径
         * 检查扩展名合法   

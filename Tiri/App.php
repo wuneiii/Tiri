@@ -1,6 +1,11 @@
 <?php
+/**
+ * 全局单例的App类
+ */
+namespace Tiri;
+use Tiri\Widget\Probe;
 
-class Tiri_App {
+class App {
 
     public static $instance;
 
@@ -18,7 +23,7 @@ class Tiri_App {
     /** app代表当前请求的Context 故全局单例*/
     static public function getInstance() {
         if (null == self::$instance) {
-            self::$instance = new Tiri_App();
+            self::$instance = new App();
         }
         return self::$instance;
     }
@@ -29,7 +34,7 @@ class Tiri_App {
         error_reporting(E_ALL ^ E_NOTICE);
         ob_start();
 
-        $app = Tiri_App::getInstance();
+        $app = App::getInstance();
         if ($app->isBoot) {
             return;
         }
@@ -37,14 +42,15 @@ class Tiri_App {
         // 框架加入include_path
         $app->addToIncludePath(TIRI_ROOT);
 
-        // 启动class loader
-        new Tiri_ClassLoader();
+
+        // 加载核心函数
+
 
         // 读取配置项目
         $app->loadConfig();
 
         // 把业务库加入include_path
-        if ($appAutoLoadPath = Tiri_Config::get(Tiri_Const::CONFIG_AUTO_LOAD_PATH)) {
+        if ($appAutoLoadPath = Config::get(Constant::CONFIG_AUTO_LOAD_PATH)) {
             if (is_string($appAutoLoadPath))
                 $appAutoLoadPath[] = $appAutoLoadPath;
 
@@ -59,7 +65,7 @@ class Tiri_App {
         }
 
         // 时区
-        $timezone = Tiri_Config::get(Tiri_Const::CONFIG_TIMEZONE);
+        $timezone = Config::get(Constant::CONFIG_TIMEZONE);
         if ($timezone) {
             @date_default_timezone_set($timezone);
         }
@@ -68,10 +74,12 @@ class Tiri_App {
         $app->_appRoot = APP_ROOT;
         $app->_tiriRoot = TIRI_ROOT;
 
+        // 把单字函数加载进来
+        require TIRI_ROOT. '/Func/Global.php';
+
         ob_clean();
-
+        Probe::here('app init over');
     }
-
 
     public function getAppRootPath() {
         return $this->_appRoot;
@@ -79,11 +87,12 @@ class Tiri_App {
 
     public function getUrlResolver() {
         if ($this->_urlResolver == null) {
-            $resolverClass = Tiri_Config::get(Tiri_Const::CONFIG_CLASS_URL_RESOLVER);
+            $resolverClass = Config::get(Constant::CONFIG_CLASS_URL_RESOLVER);
             if (!$resolverClass) {
-                $resolverClass = Tiri_Const::DEFAULT_CLASS_URL_RESOLVER;
+                $resolverClass = Constant::DEFAULT_CLASS_URL_RESOLVER;
             }
-            $this->_urlResolver = new $resolverClass;
+
+            $this->_urlResolver = new $resolverClass();
         }
         return $this->_urlResolver;
     }
@@ -91,28 +100,14 @@ class Tiri_App {
     public function getResponse() {
         if ($this->_appResponse == null) {
 
-            $responseClass = Tiri_Config::get(Tiri_Const::CONFIG_CLASS_RESPONSE);
+            $responseClass = Config::get(Constant::CONFIG_CLASS_RESPONSE);
             if (!$responseClass) {
-                $responseClass = Tiri_Const::DEFAULT_CLASS_RESPONSE;
+                $responseClass = Constant::DEFAULT_CLASS_RESPONSE;
             }
             $this->_appResponse = new $responseClass;
         }
         return $this->_appResponse;
     }
-
-    private function loadConfig() {
-        // 加载 系统默认配置项，再加载app配置文件
-        Tiri_Config::loadConfigFile(TIRI_ROOT . '/config.inc.php');
-        Tiri_Config::loadConfigFile(APP_ROOT . '/config.inc.php');
-
-        //加载跨项目配置文件
-        $globalConfigFile = Tiri_Config::get(Tiri_Const::CONFIG_GLOBAL_CONFIG);
-        if (file_exists($globalConfigFile)) {
-            Tiri_Config::loadConfigFile($globalConfigFile);
-        }
-
-    }
-
 
     public function addToIncludePath($arrPath) {
         if (is_string($arrPath)) {
@@ -125,4 +120,26 @@ class Tiri_App {
         set_include_path($path);
     }
 
+    private function loadConfig() {
+        // 加载 系统默认配置项，再加载app配置文件
+        Config::loadConfigFile(TIRI_ROOT . '/config.inc.php');
+        $appConfig = Config::loadConfigFile(APP_ROOT . '/config.inc.php');
+        if (is_array($appConfig)) {
+            foreach ($appConfig as $k => $v) {
+                Config::set($k, $v);
+            }
+        }
+
+        //加载跨项目配置文件
+        $globalConfigFile = Config::get(Constant::CONFIG_GLOBAL_CONFIG);
+        if (file_exists($globalConfigFile)) {
+            $globalConfig = Config::loadConfigFile($globalConfigFile);
+            if (is_array($globalConfig)) {
+                foreach ($globalConfig as $k => $v) {
+                    Config::set($k, $v);
+                }
+            }
+        }
+
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+namespace Tiri;
 /*
 [QUERY_STRING] => a=b=c
 [REQUEST_URI] => /admin/index.php/a/b/c?a=b=c
@@ -7,7 +8,7 @@
 [PATH_TRANSLATED] => E:\some_code\2012-06-30-with-zhujia\a\b\c
 [PHP_SELF] => /admin/index.php/a/b/c
 */
-class Tiri_Request{
+class Request{
     public static $instance;
     private $_controller;
     private $_action;
@@ -22,13 +23,13 @@ class Tiri_Request{
 
     static public function getInstance(){
         if(null == self::$instance){
-            self::$instance = new Tiri_Request();
+            self::$instance = new Request();
             self::$instance->analysis();
         }
         return self::$instance;
     }
     public function analysis(){
-        $app = Tiri_App::getInstance();
+        $app = App::getInstance();
         $urlResolver = $app->getUrlResolver();
 
         $this->_controller  = $urlResolver->getController($this);

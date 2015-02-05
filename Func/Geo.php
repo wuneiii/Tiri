@@ -1,6 +1,6 @@
 <?php
-
-class Func_Geo {
+namespace Tiri\Func;
+class Geo {
 
     /** 系统AppInit时调用此方法，配置静态路由，拦截一下2个路由，响应geo的异步数据请求   */
     static function init() {

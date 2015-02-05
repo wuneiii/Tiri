@@ -1,36 +1,22 @@
 <?php
+namespace Tiri;
+
+use Tiri\Widget\Probe;
+
 /**
- * 框架入口
+ * 框架入口文件
  */
 
 if (!defined('APP_ROOT')) {
-    die('Please define App_Root!');
+    die('Please define APP_ROOT!');
 }
-
 define ('TIRI_ROOT', dirname(__FILE__));
 
+require TIRI_ROOT . '/Tiri/ClassLoader.php';
+ClassLoader::register();
 
-require TIRI_ROOT.'/Widget/Probe.php';
+Probe::startTimer();
 
-Widget_Probe::startTimer();
+App::init();
 
-Widget_Probe::here('App start up now;');
-
-require TIRI_ROOT.'/Tiri/App.php';
-
-Tiri_App::init();
-
-$appHook = Tiri_Hook::getInstance();
-$appHook->runHook('afterAppInit');
-
-Widget_Probe::here('After Tiri_App::init()');
-
-$appHook->runHook('beforeDispose');
-
-Widget_Probe::here('Before Tiri_Router::dispose();');
-
-Tiri_Router::dispose();
-
-Widget_Probe::here('After Tiri_Router::dispose();');
-
-$appHook->runHook('afterDispose');
+Router::dispose();

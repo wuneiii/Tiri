@@ -1,5 +1,6 @@
 <?php
-    class Func_Date{
+namespace Tiri\Func;
+    class Date{
         static public function init(){}
         /**
          * @desc 产生一个日的下拉菜单

@@ -1,6 +1,6 @@
 <?php
-  class Tiri_Widget{
-      
-      
-  }
-?>
+namespace Tiri;
+class Widget {
+
+
+}

@@ -1,5 +1,6 @@
 <?php
-    class Func_Util{
+namespace Tiri\Func;
+    class Util{
         static public function init(){}
         
         static public function fristStrToUpper($string){

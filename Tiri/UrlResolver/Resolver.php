@@ -1,5 +1,9 @@
 <?php
-class Tiri_Router_Resolver implements Tiri_Interface_Resolver{
+namespace Tiri\UrlResolver;
+use Tiri\Request;
+use Tiri\Config;
+
+class Resolver implements IResolver{
 
     private $cParamName;
     private $aParamName;
@@ -7,13 +11,13 @@ class Tiri_Router_Resolver implements Tiri_Interface_Resolver{
     private $defaultA;
 
     public function __construct(){
-        $this->cParamName = Tiri_Config::get('tiri.controllerParamName');
-        $this->aParamName = Tiri_Config::get('tiri.actionParamName');
-        $this->defaultC = Tiri_Config::get('tiri.defaultController');
-        $this->defaultA = Tiri_Config::get('tiri.defaultAction');
+        $this->cParamName = Config::get('tiri.controllerParamName');
+        $this->aParamName = Config::get('tiri.actionParamName');
+        $this->defaultC = Config::get('tiri.defaultController');
+        $this->defaultA = Config::get('tiri.defaultAction');
     }
 
-    public function getController(Tiri_Request $req){
+    public function getController(Request $req){
         $controller = $this->defaultC;
         if($this->cParamName){
             $c = $req->getString($this->cParamName);
@@ -23,7 +27,7 @@ class Tiri_Router_Resolver implements Tiri_Interface_Resolver{
         }
         return 'Controller_'.$controller;
     }
-    public function getAction(Tiri_Request $req){
+    public function getAction(Request $req){
         $action = $this->defaultA;
         if($this->aParamName){
             $a = $req->getString($this->aParamName);

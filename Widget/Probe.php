@@ -1,6 +1,16 @@
 <?php
+/**
+ * 性能探针，记录运行过程中的各种耗时。
+ *
+ * 业务代码中调用  Widget_Probe::here('XXX') 即可记录下当时的运行耗时
+ *
+ * 在::report 看到全局性能记录数据
+ * Class Widget_Probe
+ */
 
-class Widget_Probe {
+namespace Tiri\Widget;
+
+class Probe {
     static private $_data;
     static private $_clock;
 
@@ -26,6 +36,7 @@ class Widget_Probe {
 
     static public function startTimer() {
         self::$_clock = microtime(true);
+        self::here('start');
     }
 
     static public function getNowTimer() {

@@ -1,12 +1,19 @@
 <?php
-class Tiri_Hook {
+
+namespace Tiri;
+/**
+ * 业务中可用来hook的地方不是很多。
+ * 故未完善此组件。在目前版本中，无法使用hook
+ * Class Tiri_Hook
+ */
+class Hook {
 
     static private $_instance;  
 
-    private  $_pluginList = array() ;
+    private  $_pluginList = array();
 
     static public function getInstance(){
-        if(NULL == self::$_instance){
+        if(null == self::$_instance){
             self::$_instance = new Tiri_Hook();
         }
         return self::$_instance;
@@ -41,11 +48,8 @@ class Tiri_Hook {
                 call_user_func($funcName);
                 Widget_Probe::here('After runHook hookPoint = '.$hookPoint.',funcName= '.$funcName);
 
-            }else{
-                Tiri_Error::add("function is not exists $funcName" , __FILE__ , __LINE__);
             }
         }
-
     }
     public static function runShutdownHook(){
         Widget_Probe::here('App shutdown;');
@@ -55,4 +59,3 @@ class Tiri_Hook {
 
     }
 }
-?>

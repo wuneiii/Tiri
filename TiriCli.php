@@ -1,15 +1,13 @@
 <?php
-if (!defined('__APP_ROOT__')) {
-    die('No App_Root!');
+namespace Tiri;
+
+if (!defined('APP_ROOT')) {
+    die('Please define APP_ROOT!');
 }
+define ('TIRI_ROOT', dirname(__FILE__));
 
-define('__TIRI_ROOT__', dirname(__FILE__));
+require TIRI_ROOT . '/Tiri/ClassLoader.php';
 
-require_once __TIRI_ROOT__ . '/Widget/Probe.php';
-Widget_Probe::here('App start up now;');
+ClassLoader::register();
 
-require_once __TIRI_ROOT__ . '/Tiri/App.php';
-Tiri_App::init();
-
-Tiri_Hook::getInstance()->runHook('afterAppInit');
-Widget_Probe::here('After Tiri_App::init()');
+App::init();

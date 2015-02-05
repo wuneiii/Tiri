@@ -1,6 +1,7 @@
 <?php
-class Widget_Coding{
-    static $mapbit = array(
+namespace Tiri\Widget;
+class Coding{
+    static $bitmap = array(
         5,  2,  4,  1,
         29,  3, 28,  0,
         13,  7, 11,  6,
@@ -13,36 +14,59 @@ class Widget_Coding{
     );
 
 
-    public static function intEncode($id, array $mapbit=array()) {
+    /**
+     *
+     * intEncode 和intDecode 可以将小于2的32次方的正整数，非线性映射到同范围整数空间
+     * 常用于数据库自增id在web展现时用到。
+     *
+     * 1.需小于 2的32次方
+     * 2.必须是非负；
+     *
+     * @param $id
+     * @param array $bitmap
+     * @return int
+     */
+    public static function intEncode($id, array $bitmap=array()) {
 
-        if (empty($mapbit)) {
-            $mapbit = self::$mapbit;
+        if (empty($bitmap)) {
+            $bitmap = self::$bitmap;
         }
         $r = 0;
         $sign = 0x1 << 30;
         $id |= $sign;
         for ($x = 0; $x < 31; $x++) {
             $v = ($id >> $x) & 0x1;
-            $r |= ($v << $mapbit[$x]);
+            $r |= ($v << $bitmap[$x]);
         }
         return $r;
     }
 
-    public static function intDecode($id, array $mapbit=array()) {
-        if (empty($mapbit)) {
-            $mapbit = self::$mapbit;
+    /**
+     * 上函数的解码函数
+     * @param $id
+     * @param array $bitmap
+     * @return int
+     */
+    public static function intDecode($id, array $bitmap=array()) {
+        if (empty($bitmap)) {
+            $bitmap = self::$bitmap;
         }
 
         $r = 0;
         for ($x = 0; $x < 30; $x++) {
-            $v = ($id >> $mapbit[$x]) & 0x1;
+            $v = ($id >> $bitmap[$x]) & 0x1;
             $r |= ($v << $x);
         }
         return $r;
     }
 
 
-
+    /**
+     * 字符串加密编码函数，如不指定 $factor 参数。则每次目标码均不同。
+     * @param $str
+     * @param int $factor
+     * @return string|void
+     */
     static function  tiriEncode($str , $factor = 0){
         $len = strlen($str);
         if(!$len){
@@ -63,6 +87,11 @@ class Widget_Coding{
         return self::base64URLEncode($ret);
     }
 
+    /**
+     * 和上边函数配对使用
+     * @param $str
+     * @return bool|string|void
+     */
     static function tiriDecode($str){  
         if($str == ''){
             return;
@@ -83,6 +112,11 @@ class Widget_Coding{
         return implode($slice);
     }
 
+    /**
+     * base64编码，替换掉浏览器中会造成歧义的字符
+     * @param $data
+     * @return string
+     */
     static function base64URLEncode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
@@ -91,6 +125,11 @@ class Widget_Coding{
         return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
 
+    /**
+     * 字符串异或操作
+     * @param $str
+     * @return mixed
+     */
     static function stringXor($str){
         for ($i = 0; $i < strlen($str); ++$i) {
             $str[$i] = chr(ord($str[$i]) ^ 0x7F);

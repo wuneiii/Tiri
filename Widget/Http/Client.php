@@ -1,5 +1,6 @@
 <?php
-class Widget_Http_Client{
+namespace Tiri\Widget\Http;
+class Client{
 
     private $_header = array();
     private $_lastUrl;

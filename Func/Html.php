@@ -1,5 +1,6 @@
 <?php
-    class Func_Html{
+namespace Tiri\Func;
+    class Html{
 
         static public function select($name , $option = array(), $selected = '',  $attr = array('class'=>'','id'=>'')){
             $_attrStr = '';

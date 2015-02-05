@@ -1,5 +1,6 @@
 <?php
-    class Func_Fs{
+namespace Tiri\Func;
+    class Fs{
         static public function rm($file ){
             return unlink($file);
         }

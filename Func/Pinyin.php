@@ -1,5 +1,6 @@
 <?php
-    class Func_Pinyin{
+namespace Tiri\Func;
+    class Pinyin{
         public static function getFristLetter($str)
         {
             $str = iconv('utf8','gb2312' , $str);

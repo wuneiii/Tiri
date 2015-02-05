@@ -1,6 +1,7 @@
 <?php
-    class Tiri_Response {
-        public function send($content) {
-            echo $content;
-        }   
+namespace Tiri;
+class Response {
+    public function send($content) {
+        echo $content;
     }
+}

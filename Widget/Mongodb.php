@@ -1,5 +1,6 @@
 <?php
-    class Widget_Mongodb{
+namespace Tiri\Widget;
+    class Mongodb{
 
         private $_config;
         private $_mongoClient;
@@ -66,4 +67,3 @@
         }
 
     }
-?>
