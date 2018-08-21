@@ -1,5 +1,6 @@
 <?php
-class Tiri_Controller{
+namespace Sloop;
+class Controller{
 
     private static $_loaded;
 

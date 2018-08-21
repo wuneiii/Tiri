@@ -1,6 +1,8 @@
 <?php
+namespace Sloop;
 
-class Tiri_Constant {
+
+class Constant {
 
     const DEFAULT_CLASS_URL_RESOLVER = 'Tiri_Router_Resolver';
     const DEFAULT_CLASS_RESPONSE = 'Tiri_Response';

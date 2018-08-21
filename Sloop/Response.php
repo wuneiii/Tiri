@@ -1,5 +1,7 @@
 <?php
-    class Tiri_Response {
+
+namespace Sloop;
+    class Response {
         public function send($content) {
             echo $content;
         }   

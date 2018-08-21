@@ -1,5 +1,7 @@
 <?php
-class Tiri_Template{
+
+namespace Sloop;
+class Template{
 
     private $_tpl_data = array();
 

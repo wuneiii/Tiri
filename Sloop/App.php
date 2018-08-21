@@ -1,9 +1,7 @@
 <?php
-/**
- * 全局单例的App类
- */
+namespace Sloop;
 
-class Tiri_App {
+class App {
 
     public static $instance;
 

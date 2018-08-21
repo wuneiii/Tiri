@@ -1,4 +1,6 @@
 <?php
+
+namespace Sloop;
 /*
 [QUERY_STRING] => a=b=c
 [REQUEST_URI] => /admin/index.php/a/b/c?a=b=c
@@ -7,7 +9,7 @@
 [PATH_TRANSLATED] => E:\some_code\2012-06-30-with-zhujia\a\b\c
 [PHP_SELF] => /admin/index.php/a/b/c
 */
-class Tiri_Request{
+class Request{
     public static $instance;
     private $_controller;
     private $_action;

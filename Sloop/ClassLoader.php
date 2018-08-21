@@ -1,6 +1,8 @@
 <?php
 
-class Tiri_ClassLoader {
+namespace Sloop;
+
+class ClassLoader {
     public static function register() {
         $callback = array(new Tiri_ClassLoader(), 'autoLoad');
         spl_autoload_register($callback);

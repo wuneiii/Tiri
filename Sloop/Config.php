@@ -1,5 +1,7 @@
 <?php
-class Tiri_Config{
+namespace Sloop;
+
+class Config{
 
     private static $_config;
     private static $_global;

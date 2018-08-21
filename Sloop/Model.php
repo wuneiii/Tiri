@@ -1,10 +1,12 @@
 <?php
+
+namespace Sloop;
 /**
  * 1.数据表必须用一个auto_inc 的主键，否则不能支持
  * 2.
  * Class Tiri_Model
  */
-class Tiri_Model {
+class Model {
 
     /**
      * @desc  table name in db

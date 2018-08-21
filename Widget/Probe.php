@@ -12,7 +12,7 @@ class Widget_Probe
 
     static public function report()
     {
-        echo '<div><p>[Debug]Tiri-Framework Flow Track:</p><ol>';
+        echo '<div><p>[Debug]Sloop-Framework Flow Track:</p><ol>';
 
         foreach (self::$_data as $where => $when) {
             if (!isset($_last)) {
