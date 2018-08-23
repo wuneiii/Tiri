@@ -177,7 +177,7 @@
             if(count($this -> _info['sql']) == 0 ){
                 return ;
             }
-            echo '<div><p>Sloop-Framework Sql Track:</p><ol>';
+            echo '<div><p>Core-Framework Sql Track:</p><ol>';
 
             foreach($this -> _info['sql'] as $k => $sql){ 
                 $_td = sprintf('%.4f' , $this -> _info['time'][$k]) ;             

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sloop;
+namespace Sloop\Core;
 /**
  * 1.数据表必须用一个auto_inc 的主键，否则不能支持
  * 2.
@@ -150,7 +150,7 @@ class Model {
             $this->fillFromArray($argv[0]);
         } else if ($argc == 2 && is_string($argv[0])) {
             $this->fillFromKv($argv[0], $argv[1]);
-        } else if ($argc == 1 && $argv[0] instanceof Tiri_Model) {
+        } else if ($argc == 1 && $argv[0] instanceof Model) {
             $model = $argv[0];
             foreach ($this->_fields as $f) {
                 if ($v = $model->getField($f)) {

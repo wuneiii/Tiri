@@ -1,6 +1,6 @@
 <?php
 
-namespace Sloop;
+namespace Sloop\Core;
 
 class Cli {
 
@@ -21,6 +21,8 @@ class Cli {
      * 取得内存使用
      *
      * @param mixed $format
+     * @return
+     *
      */
     static function memoryUserd($format = true) {
 
@@ -52,5 +54,3 @@ class Cli {
         return posix_getpid();
     }
 }
-
-?>

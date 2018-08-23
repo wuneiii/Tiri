@@ -1,6 +1,7 @@
 <?php
+namespace Sloop\Func;
 
-class Func_Core {
+class Core {
     static public function load() {
     }
 }

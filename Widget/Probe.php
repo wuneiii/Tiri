@@ -1,18 +1,16 @@
 <?php
+namespace Sloop\Widget;
 
-class Widget_Probe
-{
+class Probe {
     static private $_data;
     static private $_clock;
 
-    static public function here($where)
-    {
+    static public function here($where) {
         self::$_data[$where] = microtime(true);
     }
 
-    static public function report()
-    {
-        echo '<div><p>[Debug]Sloop-Framework Flow Track:</p><ol>';
+    static public function report() {
+        echo '<div><p>[Debug]Core-Framework Flow Track:</p><ol>';
 
         foreach (self::$_data as $where => $when) {
             if (!isset($_last)) {
@@ -27,19 +25,16 @@ class Widget_Probe
     }
 
 
-    static public function startTimer()
-    {
+    static public function startTimer() {
         self::$_clock = microtime(true);
         self::here('app start');
     }
 
-    static public function getNowTimer()
-    {
+    static public function getNowTimer() {
         return microtime(true) - self::$_clock;
     }
 
-    static public function getAndStopTimer()
-    {
+    static public function getAndStopTimer() {
         return microtime(true) - self::$_clock;
     }
 }

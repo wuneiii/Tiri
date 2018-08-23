@@ -1,9 +1,5 @@
 <?php
-/**
-* @date 2013-10-15 16:16:58
-* @desc 默认配置，如果app配置文件中会覆盖这里的配置
-* 
-*/
+
 
 // app. 下配置项目为Tiri内部使用配置项，会影响Tiri行为
 Tiri_Config::set('tiri.globalConfigFile', '');
