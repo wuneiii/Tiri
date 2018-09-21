@@ -2,35 +2,40 @@
 
 namespace Sloop\Core;
 
-use Sloop\Core\Router\Resolver;
-use Sloop\Widget\Probe;
-use Sloop\Widget\Resource;
+use Sloop\Lib\Resource;
 
 class Template {
 
-    private $tplData = array();
-
-    public static $js_file_array;
-    public static $js_kv_array;
-    public static $css_file_array;
     public static $instance;
 
-    private function __construct() {}
-
-    static public function getInstance($path = '') {
+    static public function getInstance() {
         if (null == self::$instance) {
             self::$instance = new Template();
-            if ($path != '') {
-                self::$instance->setRootPath($path);
-            }
         }
         return self::$instance;
     }
 
 
-    public function setRootPath($path){
-        if($path){
-            Config::set('app.tplPath', $path);
+    private $tplData = array();
+
+    private $tplRootPath = '';
+    private $tplFileExt  = '';
+
+    private $jsFileArray;
+    private $jsKvArray;
+    private $cssFileArray;
+
+    private function __construct() {
+        $config = Config::getInstance();
+        $this->tplRootPath = $config->get('app.tplPath');
+        $this->tplFileExt = $config->get('app.tplExt');
+    }
+
+
+    public function setRootPath($path) {
+        if ($path) {
+            Config::getInstance()->set('app.tplPath', $path);
+            $this->tplRootPath = $path;
         }
     }
 
@@ -47,12 +52,12 @@ class Template {
     }
 
     public function insertJsVal($key = '', $value = '') {
-        if ($key == '' && count(self::$js_kv_array) != 0) {
+        if ($key == '' && count($this->jsKvArray) != 0) {
             echo <<<EOF
 <script type="text/javascript">
 
 EOF;
-            foreach (self::$js_kv_array as $k => $v) {
+            foreach ($this->jsKvArray as $k => $v) {
                 echo <<<EOF
 var $k = '$v';
 
@@ -63,15 +68,15 @@ EOF;
 
 EOF;
         } else {
-            self::$js_kv_array[$key] = $value;
+            $this->jsKvArray[$key] = $value;
         }
 
     }
 
     public function insertJsFile($file = '') {
-        if ($file == '' && count(self::$js_file_array) != 0) {
+        if ($file == '' && count($this->jsFileArray) != 0) {
 
-            foreach (self::$js_file_array as $file) {
+            foreach ($this->jsFileArray as $file) {
                 $fileFullPath = Resource::jsFilePath($file);
                 echo <<<EOF
 <script type="text/javascript" src="$fileFullPath"></script>
@@ -79,74 +84,73 @@ EOF;
 EOF;
             }
         } else {
-            self::$js_file_array[] = $file;
+            $this->jsFileArray[] = $file;
         }
 
     }
 
     public function insertCssFile($file = '') {
-        if ($file == '' && count(self::$css_file_array) != 0) {
+        if ($file == '' && count($this->cssFileArray) != 0) {
 
-            foreach (self::$css_file_array as $file) {
+            foreach ($this->cssFileArray as $file) {
                 $fileFullPath = Resource::cssFilePath($file);
                 echo <<<EOF
-<link rel="stylesheet" type="text/css"  href="$fileFullPath">
+<link rel="stylesheet" type="text/css"  href="$fileFullPath">\n\t
 EOF;
             }
         } else {
-            self::$css_file_array[] = $file;
+            $this->cssFileArray[] = $file;
         }
 
     }
 
-    public function js() {
+    public function insertJsCssFile() {
         $this->insertJsVal();
         $this->insertJsFile();
         $this->insertCssFile();
-
     }
 
-    public function render($file, $absPath = false) {
+    public function getTplRealFile($tplName) {
+        if (substr($this->tplRootPath, -1) != '/') {
+            $this->tplRootPath .= "/";
+        }
 
-
-        Probe::here('Before Tiri_Template::render(' . $file . ');');
-
-        $this->renderWithoutHook($file, $absPath);
-
-        Probe::here('After Tiri_Template::render(' . $file . ');');
+        return $this->tplRootPath . $tplName . "." . $this->tplFileExt;
     }
 
-    /**
-     * @date 2013-10-15 17:39:44
-     * @desc 渲染大括号模板
-     *
-     * @param mixed $template
-     */
-    public function renderBraceTemplate($template) {
-        extract($this->tplData);
-        if (count($this->tplData) > 0) foreach ($this->_tpl_data as $key => $value) {
-            $template = preg_replace('#{{' . $key . '}}#', $value, $template);
+    public function loadTpl($file) {
+
+        if (!file_exists($file)) {
+            return false;
         }
-        echo $template;
+        $content = file_get_contents($file);
+        $parserList = array(
+            '\Template\TagUrl',
+            '\Template\TagRender',
+            '\Template\TagPhp',
+        );
+        foreach ($parserList as $p) {
+            $parserFullName = __NAMESPACE__ . $p;
+            if (!class_exists($parserFullName)) {
+                continue;
+            }
+
+            $callback = array(
+                new $parserFullName,
+                'parse'
+            );
+            $content = call_user_func($callback, $content, $this->tplData);
+        }
+
+        return $content;
     }
 
 
-    public function renderWithoutHook($file, $absPath = false) {
-        $tplRootPath = Config::get('app.tplPath');
-        if(substr($tplRootPath, strlen($tplRootPath)-1) != '/'){
-            $tplRootPath .="/";
-        }
+    public function render($tplName) {
 
-        if (!$absPath) {
-            $file = $tplRootPath . $file . ".".Config::get('app.tplExt');
-        }
-        extract($this->tplData);
-        if (file_exists($file)) {
-            require_once $file;
-        } else {
-            echo 'file {' . $file . '} not exists';
-        }
-
+        $realTplFile = $this->getTplRealFile($tplName);
+        $tplContent = $this->loadTpl($realTplFile);
+        echo $tplContent;
 
     }
 }

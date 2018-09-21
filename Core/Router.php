@@ -2,8 +2,7 @@
 
 namespace Sloop\Core;
 
-use Sloop\Core\Router\Resolver;
-use Sloop\Widget\Probe;
+use Sloop\Lib\Probe;
 
 class Router {
 
@@ -21,7 +20,7 @@ class Router {
 
     private $fixedRouter = array();
 
-    public function __construct(Resolver $resolver) {
+    public function __construct(UrlResolverInterface $resolver) {
         $this->resolver = $resolver;
     }
 
@@ -77,7 +76,5 @@ class Router {
 
         }
         die(sprintf('[%s][%s]NOT EXIST', $ctl, $act));
-
-        return false;
     }
 }

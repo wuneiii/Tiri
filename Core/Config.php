@@ -4,12 +4,7 @@ namespace Sloop\Core;
 
 class Config {
 
-    private static $config;
     private static $instance;
-
-    private function __construct() {
-
-    }
 
     static public function getInstance() {
         if (null == self::$instance) {
@@ -18,39 +13,70 @@ class Config {
         return self::$instance;
     }
 
-    static public function loadConfigFile($file) {
-        if (!file_exists($file)) return false;
-        require_once $file;
+    private $config = array();
 
+    private function __construct() {
+        $defaultConfig = array(
+            'sloop.ctlParam'    => 'controller',
+            'sloop.actParam'    => 'action',
+            'sloop.defaultCtl'  => 'Index',
+            'sloop.defaultAct'  => 'index',
+            'sloop.tplPath'     => '',
+            'sloop.timezone'    => 'Asia/Shanghai',
+            'sloop.urlResolver' => 'Sloop\Core\UrlResolver\DefaultUrlResolver',
+            'sloop.response'    => 'Sloop\Core\Response',
+            'app.tplPath'       => 'template',
+            'app.tplExt'        => 'html',
+            'app.resPathPrefix' => array(
+                'css'   => '',
+                'js'    => '',
+                'image' => ''
+            )
+        );
+
+        $this->setArray($defaultConfig);
     }
 
 
-    static public function set($key, $value) {
-        self::$config[$key] = $value;
+    public function loadConfigFile($file) {
+        if (!file_exists($file)) {
+            return false;
+        }
+        $config = @include_once($file);
+        if (!$config) {
+            Log::timeline('loadConfigFile fail [' . $file . ']');
+            return false;
+        }
+        $this->setArray($config);
+    }
+
+
+    public function set($key, $value) {
+        $this->config[$key] = $value;
 
     }
 
-    static public function setArray($array) {
+    public function setArray($array) {
         if (!is_array($array) || count($array) == 0) {
             return;
         }
         foreach ($array as $k => $v) {
-            self::set($k, $v);
+            $this->set($k, $v);
         }
     }
 
-    static public function get($key, $default = null) {
-        if (!isset(self::$config[$key])) return $default;
-        return self::$config[$key];
+    public function get($key, $default = null) {
+        if (!isset($this->config[$key])) return $default;
+        return $this->config[$key];
     }
 
 
-    static public function delete($key) {
-        unset(self::$config[$key]);
+    public function delete($key) {
+        unset($this->config[$key]);
     }
 
-    static public function dump() {
-        var_dump(self::$config);
+    public function dump() {
+        var_dump($this->config);
     }
 
 }

@@ -49,8 +49,8 @@ class ClassLoader {
                 $realClassFile = $path . substr($className, strlen($nsPrefix)) . '.php';
                 $realClassFile = str_replace('\\', '/', $realClassFile);
 
-                require $realClassFile;
-                return;
+                include_once $realClassFile;
+
 
             }
         }

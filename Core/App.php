@@ -2,8 +2,7 @@
 
 namespace Sloop\Core;
 
-use Sloop\Core\Router\Resolver;
-use Sloop\Widget\Probe;
+use Sloop\Lib\Probe;
 
 class App {
 
@@ -14,10 +13,13 @@ class App {
     private $urlResolver;
 
     // 是否已经初始化完成
-    public $isBooted;
+    private $isBooted;
+    private $config;
+
 
     private function __construct() {
-        $this->loadConfig();
+        $this->config = Config::getInstance();
+        $this->loadAppConfig();
         $this->initEnv();
     }
 
@@ -25,6 +27,7 @@ class App {
     static public function getInstance() {
         if (null == self::$instance) {
             self::$instance = new App();
+            Log::startTimer();
         }
         return self::$instance;
     }
@@ -40,7 +43,7 @@ class App {
         error_reporting(E_ALL ^ E_NOTICE);
 
         // 时区
-        $timezone = Config::get(Config::get('sloop.timezone'));
+        $timezone = $this->config->get('sloop.timezone');
         if ($timezone) {
             @date_default_timezone_set($timezone);
         }
@@ -61,12 +64,19 @@ class App {
     }
 
 
-    private function loadConfig() {
-        DefaultConfig::loadConfig();
+    public function loadAppConfig($userConfig = array()) {
+        $appConfigFile = APP_ROOT . '/config/config.php';
+        if (file_exists($appConfigFile)) {
+            $this->config->loadConfigFile($appConfigFile);
+        }
+        if ($userConfig && is_array($userConfig)) {
+            $this->config->setArray($userConfig);
+        }
     }
 
     private function initUrlResolver() {
-        $this->urlResolver = new Resolver();
+        $resolverName = $this->config->get('sloop.urlResolver');
+        $this->urlResolver = new $resolverName;
     }
 
     private function disposeRequest() {
@@ -75,8 +85,12 @@ class App {
     }
 
 
-    public function registerAppNsPrefix($appNsPrefix){
+    public function registerAppNsPrefix($appNsPrefix) {
         $sloopClsLoader = ClassLoader::getInstance();
         $sloopClsLoader->registerNamespace('\App\\', $appNsPrefix);
+    }
+
+    public function getUrlResolver() {
+        return $this->urlResolver;
     }
 }
